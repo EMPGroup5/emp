@@ -69,7 +69,7 @@ def add_employee():
         with open(pathlib.Path(__file__).parent.absolute().__str__() + "/database.json", "x") as f:
             json.dump(employees, f, ensure_ascii=False, indent=4)
 
-    another_employee_check = input("Do you want to add an another employee? (y/n)")
+    another_employee_check = input("Do you want to add an another employee? (y/n) ")
     if another_employee_check == "y":
         return add_employee()
 
