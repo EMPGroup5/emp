@@ -1,6 +1,8 @@
 import datetime
 import json
 
+# Hi!
+
 # list of all saved employees
 employees = []
 
