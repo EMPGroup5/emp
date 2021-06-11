@@ -1,7 +1,6 @@
 import datetime
 import json
-
-# Hi!
+import pathlib
 
 # list of all saved employees
 employees = []
@@ -28,15 +27,13 @@ def create_menu():
     while True:
 
         print_choose()
-        print("1. add datasets from file (merge)\n2. add new single dataset (via console)\n"
+        print("1. add datasets from file (merge)\n2. add new single (or multiple) dataset(s) (via console)\n"
               "3. add new column (for all datasets)\n4. back")
         selection = choose_between(1, 4)
         if selection == "1":
             print_not_developed()
         elif selection == "2":
             add_employee()
-            with open('database.json', 'w', encoding='utf-8') as f:
-                json.dump(employees, f, ensure_ascii=True, indent=4)
         elif selection == "3":
             print_not_developed()
         elif selection == "4":
@@ -48,7 +45,8 @@ def create_menu():
 def add_employee():
     # Instructions output
     print("Please add the employee data!")
-    employee = {"id": int(input("ID: ")), "firstname": input("Firstname: "), "lastname": input("Lastname: "),
+    id = int(input("ID: "))
+    employee = {"id": id, "firstname": input("Firstname: "), "lastname": input("Lastname: "),
                 "date_of_birth": input("Date of birth (dd.mm.yyyy): "),
                 "address": input("Address: "), "department": input("Department: "),
                 "phone_number": input("Phone number: "), "employment_status": input("Employment status: "),
@@ -63,6 +61,18 @@ def add_employee():
     print()
     print("The employee", employee["firstname"], employee["lastname"], "was added successfully.\n")
 
+    path_source = pathlib.Path(pathlib.Path(__file__).parent.absolute().__str__() + "/database.json")
+    if path_source.exists():
+        with open(pathlib.Path(__file__).parent.absolute().__str__() + "/database.json", "r+") as f:
+            json.dump(employees, f, ensure_ascii=False, indent=4)
+    else:
+        with open(pathlib.Path(__file__).parent.absolute().__str__() + "/database.json", "x") as f:
+            json.dump(employees, f, ensure_ascii=False, indent=4)
+
+    another_employee_check = input("Do you want to add an another employee? (y/n)")
+    if another_employee_check == "y":
+        return add_employee()
+
 
 def read_menu():
     while True:
@@ -71,7 +81,7 @@ def read_menu():
               "4. show empty fields\n5. back")
         selection = choose_between(1, 5)
         if selection == "1":
-            print_all()
+            print_all(True)
         elif selection == "2":
             print_not_developed()
         elif selection == "3":
@@ -84,34 +94,34 @@ def read_menu():
             print_not_valid()
 
 
-def print_all():
-    f = open("database.json", "r", encoding="utf-8")
-    a_employees = json.load(f)
-    f.close()
-    counter = 1
-    for employee in a_employees:
-        print("Employee #", counter)
+def print_all(whole_dataset):
+    path_source = pathlib.Path(pathlib.Path(__file__).parent.absolute().__str__() + "/database.json")
+    if path_source.exists():
+        with open(pathlib.Path(__file__).parent.absolute().__str__() + "/database.json", "r+", encoding="utf-8") as f:
+            a_employees = json.load(f.read())
+    for counter, employee in enumerate(a_employees):
+        print("Employee #", (counter + 1))
         print("The employee's ID:", employee["id"])
         print("The employee's Firstname:", employee["firstname"])
         print("The employee's Lastname:", employee["lastname"])
-        import_birthday = employee["date_of_birth"]
-        birthday = datetime.datetime.strptime(import_birthday, '%d.%m.%Y')
-        print("The employee's Age:", round(abs((datetime.datetime.today() - birthday).days / 365)))
-        print("The employee's Address:", employee["address"])
-        print("The employee's Department:", employee["department"])
-        print("The employee's Phone number:", employee["phone_number"])
-        print("The employee's employment status:", employee["employment_status"])
-        print("The employee's gender:", employee["gender"])
-        print("The employee's driver's License(s):", employee["drivers_license"])
-        print("The employee's religion:", employee["religion"])
-        print("The employee's health insurance:", employee["health_insurance"])
-        print("The employee's marital status:", employee["marital_status"])
-        print("The employee's salary:", employee["salary"])
-        print("The employee's e-mail address:", employee["email"])
-        print("The employee's superior:", employee["superior"])
-        print("The employee's entry date:", employee["entry_date"])
+        if whole_dataset == True:
+            import_birthday = employee["date_of_birth"]
+            birthday = datetime.datetime.strptime(import_birthday, '%d.%m.%Y')
+            print("The employee's Age:", round(abs((datetime.datetime.today() - birthday).days / 365)))
+            print("The employee's Address:", employee["address"])
+            print("The employee's Department:", employee["department"])
+            print("The employee's Phone number:", employee["phone_number"])
+            print("The employee's employment status:", employee["employment_status"])
+            print("The employee's gender:", employee["gender"])
+            print("The employee's driver's License(s):", employee["drivers_license"])
+            print("The employee's religion:", employee["religion"])
+            print("The employee's health insurance:", employee["health_insurance"])
+            print("The employee's marital status:", employee["marital_status"])
+            print("The employee's salary:", employee["salary"])
+            print("The employee's e-mail address:", employee["email"])
+            print("The employee's superior:", employee["superior"])
+            print("The employee's entry date:", employee["entry_date"])
         print("\n")
-        counter += 1
 
 
 def update_menu():
