@@ -34,7 +34,7 @@ def create_menu():
         elif selection == "2":
             add_employee()
             with open('database.json', 'w', encoding='utf-8') as f:
-                json.dump(employees, f, ensure_ascii=False, indent=4)
+                json.dump(employees, f, ensure_ascii=True, indent=4)
         elif selection == "3":
             print_not_developed()
         elif selection == "4":
